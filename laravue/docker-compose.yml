@@ -5,7 +5,10 @@ services:
     container_name: laravue
     build: .
     volumes:
-      - ./app:/var/www/html
+      - ${PROJECT_PATH:-../../laravue-monolito-app}:/var/www/html
     ports:
       - "8000:8000"
-    command: sh ./init.sh
+      - "5173:5173" # Porta do Vite (Frontend)
+    environment:
+      - USER_ID=${UID:-1000}
+      - GROUP_ID=${GID:-1000}
