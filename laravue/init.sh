@@ -4,7 +4,7 @@ set -e
 TARGET_DIR="/var/www/html"
 
 if [ ! -f "$TARGET_DIR/artisan" ]; then
-  echo "🚀 Criando Laravue Monolito..."
+  echo "Criando Laravue Monolito..."
 
   composer create-project laravel/laravel .
 
@@ -22,20 +22,20 @@ if [ ! -f "$TARGET_DIR/artisan" ]; then
   php artisan key:generate
   php artisan migrate --graceful
 
-  echo "📦 Instalando Vue e dependências..."
+  echo "Instalando Vue e dependências..."
   npm install
   npm install vue @vitejs/plugin-vue
 
   npm install -D @vitejs/plugin-vue
 
-  echo "🔧 Ajustando permissões para o usuário $USER_ID:$GROUP_ID..."
+  echo "Ajustando permissões para o usuário $USER_ID:$GROUP_ID..."
   chown -R $USER_ID:$GROUP_ID $TARGET_DIR
   chmod -R 775 storage bootstrap/cache
 else
-  echo "✅ Laravue já existe"
+  echo "Laravue já existe"
 fi
 
 php artisan serve --host=0.0.0.0 --port=8000 &
 
-echo "🔥 Iniciando Vite..."
+echo "Iniciando Vite..."
 npm run dev -- --host
