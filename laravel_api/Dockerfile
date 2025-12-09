@@ -1,26 +1,18 @@
-FROM php:8.2-fpm
+FROM php:8.3-cli
 
-# Instala extensões PHP
 RUN apt-get update && apt-get install -y \
-    git zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev libpq-dev \
-    && docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+    git \
+    unzip \
+    zip \
+    libsqlite3-dev \
+    && docker-php-ext-install pdo pdo_sqlite \
+    && rm -rf /var/lib/apt/lists/*
 
-# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-COPY . .
+COPY init.sh /usr/local/bin/init.sh
+RUN chmod +x /usr/local/bin/init.sh
 
-RUN if [ -f composer.json ]; then \
-        composer install --no-dev --optimize-autoloader; \
-    else \
-        echo "composer.json not found, skipping composer install"; \
-    fi
-
-# Permissões
-RUN mkdir -p storage bootstrap/cache \
-    && chown -R www-data:www-data storage bootstrap/cache
-
-EXPOSE 9000
-CMD ["php-fpm"]
+ENTRYPOINT ["/usr/local/bin/init.sh"]

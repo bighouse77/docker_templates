@@ -2,15 +2,8 @@ FROM node:20
 
 WORKDIR /app
 
-COPY package*.json ./
+# Copia script de inicialização
+COPY init.sh /usr/local/bin/init.sh
+RUN chmod +x /usr/local/bin/init.sh
 
-RUN if [ -f package.json ]; then \
-        npm install; \
-    else \
-        echo "package.json not found, skipping npm install"; \
-    fi
-
-COPY . .
-
-EXPOSE 8080
-CMD ["npm", "run", "serve"]
+CMD ["init.sh"]

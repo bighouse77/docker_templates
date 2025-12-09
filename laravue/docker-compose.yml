@@ -1,32 +1,11 @@
 version: "3.9"
+
 services:
   app:
+    container_name: laravue
     build: .
-    container_name: lara-vue-monolith
-    ports:
-      - "8000:9000"
     volumes:
-      - .:/var/www/html
-    environment:
-      DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: laravel
-      DB_USERNAME: root
-      DB_PASSWORD: secret
-    depends_on:
-      - db
-
-  db:
-    image: mysql:8.0
-    container_name: lara-vue-db
-    environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_ROOT_PASSWORD: secret
+      - ./app:/var/www/html
     ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-
-volumes:
-  db_data:
+      - "8000:8000"
+    command: sh ./init.sh
