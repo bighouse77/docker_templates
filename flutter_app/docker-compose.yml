@@ -8,4 +8,4 @@ services:
     volumes:
       - .:/app
     environment:
-      API_URL: "http://host.docker.internal:8000"
+      API_URL: http://host.docker.internal:8000

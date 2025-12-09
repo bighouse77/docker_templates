@@ -1,25 +1,30 @@
+# Build do Vue
 FROM node:20 AS node
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN if [ -f package.json ]; then npm install; else echo "package.json not found, skipping npm install"; fi
 COPY . .
-RUN npm run build
+RUN if [ -f package.json ]; then npm run build; else echo "Skipping Vue build"; fi
 
+# Build do Laravel
 FROM php:8.2-fpm
 WORKDIR /var/www/html
 
-# PHP extensions
-RUN apt-get update && apt-get install -y libzip-dev zip \
-    && docker-php-ext-install pdo_mysql zip
+RUN apt-get update && apt-get install -y libzip-dev zip libpq-dev \
+    && docker-php-ext-install pdo_mysql pdo_pgsql
 
-# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
 COPY . .
 COPY --from=node /app/dist ./public
 
-RUN composer install --no-dev --optimize-autoloader
-RUN chown -R www-data:www-data storage bootstrap/cache
+RUN if [ -f composer.json ]; then \
+        composer install --no-dev --optimize-autoloader; \
+    else \
+        echo "composer.json not found, skipping composer install"; \
+    fi
+
+RUN mkdir -p storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
 
 EXPOSE 9000
 CMD ["php-fpm"]
