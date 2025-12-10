@@ -2,13 +2,14 @@ version: "3.9"
 
 services:
   app:
-    container_name: laravue
+    container_name: laravue_generator
     build: .
+    working_dir: /var/www/html
     volumes:
       - ${PROJECT_PATH:-../../laravue-monolito-app}:/var/www/html
     ports:
       - "8000:8000"
-      - "5173:5173" # Porta do Vite (Frontend)
+      - "5173:5173"
     environment:
       - USER_ID=${UID:-1000}
       - GROUP_ID=${GID:-1000}
