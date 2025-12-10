@@ -2,9 +2,9 @@ version: "3.9"
 
 services:
   app:
-    container_name: vue_app
+    container_name: vue_generator
     build: .
-    working_dir: /app
+    working_dir: /var/www/html
     volumes:
       - ${PROJECT_PATH:-../../vue-app}:/var/www/html
     ports:
